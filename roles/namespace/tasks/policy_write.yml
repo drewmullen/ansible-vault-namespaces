@@ -1,0 +1,7 @@
+---
+
+- name: "create vault policies in {{ ns_name }}"
+  command: "{{ vault_bin }}/vault policy write {{ policy }} policies/{{ policy }}.hcl"
+  environment:
+    VAULT_ADDR: "{{ vault_url }}"
+    VAULT_NAMESPACE: "{% if ns_name == 'root' %}{% else %}{{ ns_name | default('')}}{% endif %}"

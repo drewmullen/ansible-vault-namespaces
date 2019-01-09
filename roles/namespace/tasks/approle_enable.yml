@@ -1,0 +1,28 @@
+---
+
+- name: "read approle config in {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/sys/auth/approle/tune"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    validate_certs: false
+    status_code: 200, 400 # 404 = doesnt exist. need to make
+  register: approle_get
+
+- name: enable approle auth mount
+  uri:
+    url: "{{ vault_url }}/v1/sys/auth/approle"
+    method: POST
+    body: '{"type": "approle","config":{"default_lease_ttl":"{{ approles.default_ttl | default(approle_default_ttl)}}", "max_lease_ttl":"{{ approles.max_ttl | default(approle_max_ttl)}}" }  }'
+    body_format: json
+    validate_certs: false
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    status_code: 204, 400 # 400 yields bad request, already exists
+  register: exists
+  changed_when: "exists.status == 204"
+
+## TODO make approles

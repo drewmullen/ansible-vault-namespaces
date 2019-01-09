@@ -1,0 +1,8 @@
+---
+
+ # namespace needs to go in the command
+- name: "associate policies {{ policy.policies }} for {{ policy.path }}"
+  command: "{{ vault_bin }}/vault write {{ policy.path }} policies={{ policy.policies }},default"
+  environment:
+    VAULT_ADDR: "{{ vault_url }}"
+    VAULT_NAMESPACE: "{% if ns_name == 'root' %}{% else %}{{ ns_name | default('')}}{% endif %}"

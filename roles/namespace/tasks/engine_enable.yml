@@ -1,0 +1,32 @@
+---
+ # namespace needs to go in the command
+
+- name: "check to see if {{ engine.mount_type }} named {{ engine.mount_name }} exists in {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/sys/mounts/{{ engine.mount_name }}/tune"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{{ ns_name }}"
+    validate_certs: false
+    status_code: 200,400
+  register: exists  #200 means exists already, 400 means doesnt exist
+
+- name: "enable {{ engine.mount_type }} engine named {{ engine.mount_name }} in {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/sys/mounts/{{ engine.mount_name }}"
+    method: POST
+    body: '{"type": "{{ engine.mount_type }}","config":{"version":{{ engine.version | default(engine_version)}},"default_lease_ttl":"{{ engine.default_ttl | default(engine_default_ttl)}}", "max_lease_ttl":"{{ engine.max_ttl | default(engine_max_ttl)}}" } }'
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{{ ns_name }}"
+    validate_certs: false
+    status_code: 204
+    body_format: json
+  when: "exists.status == 400"
+  register: enabled
+  changed_when: "enabled.status == 204"
+
+- name: "promote to intermediary CA"
+  include_tasks: pki.yml
+  when: engine.ca_int is defined

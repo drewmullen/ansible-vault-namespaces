@@ -1,0 +1,49 @@
+---
+
+# in order to build child namespaces you need to indicate the the parent. these facts maintain the current
+# parent and the current child (looping through the namespaces_config_template.yml)
+# ns_child is set to "" if root. this is because the `X-Vault-Namespace` header will handle "" as the root namespace
+# and will not handle "root"
+# some of this logic can be simplified in a future release: https://github.com/hashicorp/vault/issues/5987
+- set_fact:
+    ns_parent: "{% if ns_name.split('/') | count > 1 %}{{ ns_name.split('/')[:-1] | join('/') }}{% else %}{% endif %}"
+    ns_child: "{% if ns_name.split('/')[-1:] | join('') == 'root' %}{% else %}{{ ns_name.split('/')[-1:] | join('')  }}{% endif %}"
+
+- name: "create namespace {{ ns_child }} {% if ns_parent != '' %}in {{ ns_parent }}{%else%}{%endif%}"
+  import_tasks: namespace_create.yml
+  when: ns_child != "" # skip if root namespace
+
+- name: configure ldap
+  import_tasks: ldap.yml
+  when: ldap
+
+- block:
+    - name: enable approle
+      import_tasks: approle_enable.yml
+
+    - name: write approles
+      include_tasks: approle_write.yml
+      loop: "{{ approles }}"
+      loop_control:
+        loop_var: approle
+  when: approles # skip if no approles defined
+
+# TODO: check if policies match before applying (idempotent report)
+- name: write policies
+  include_tasks: policy_write.yml
+  loop: "{{ policies.split(',') }}" #| replace(' ','')
+  loop_control:
+    loop_var: policy
+
+- name: assoc policies
+  include_tasks: policy_associate.yml
+  loop: "{{ associations | flatten(levels=1)}}"
+  loop_control:
+    loop_var: policy
+
+- name: enable secret engines
+  include_tasks: engine_enable.yml
+  loop: "{{ engines | flatten(levels=1)}}"
+  loop_control:
+    loop_var: engine
+  when: engines # skip if no engines are defined

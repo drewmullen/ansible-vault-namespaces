@@ -1,0 +1,4 @@
+---
+ # namespace needs to go in the command
+
+- debug: msg="PKI PLAYS"
