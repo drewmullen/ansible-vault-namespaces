@@ -7,15 +7,16 @@ Namespaces are "mini vaults" where data, policies, mounts, etc are all managed s
 ## Requirements
 
 - config/namespaces.yml
-- files/ldap.json
 - download vault client locally to {{ vault_bin } (/usr/bin by default)
 
 ## Config YAML
 
+
+Example:
 ```
 namespace_1:
     ldap: true
-    policies: default,secret_rw
+    policies: default, secret_rw
     associations:
         - path: auth/ldap/groups/group_1
           policies: secret_rw
@@ -23,20 +24,41 @@ namespace_1:
         - mount_type: kv
           mount_name: secret
           version: 2
-    approles:
-      - role: my_app
-        #max_ttl: 50m
+        - mount_type: azure
+          mount_name: azure
+    auths:
+        - auth_type: azure
+          role: azure_role
+          config: azure_config
+        - auth_type: approle
+          role: template
 ```
 
 Options:
 
+### **auths**: (bool, optional)
+
+- enable a auth mount
+
+_approles_
+
+- create approles from defined files in approles/*.json. note, you can associate policies via the `associations` option above.
+- auth_type: (string, req)
+- role: (string, req)
+
+_azure_
+
+- auth_type: (string, req)
+- role: (string, req) - refers to a filename in `auths/<auth_type>/filename`
+- config: (string, req) - refers to a filename in `auths/<auth_type>/filename`
+
 ### **ldap**: (bool, optional)
 
-- true will look for files/ldap.json and enable and ldap auth method in namespace
+- true will look for files/ldap.json and enable and ldap auth method in namespace **this will be moved to `auths` one day**
 
 ### **policies**: (string, optional)
 
-- comma-separated list of all policies to write to this namespace. no spaces after commas, please. this looks for policies/policy.hcl files and will name the policy the file name minus *.hcl. default will always write (is required to be in policies/).
+- comma-separated list of all policies to write to this namespace. this looks for policies/policy.hcl files and will name the policy the file name minus *.hcl. default will always write (is required to be in policies/).
 
 ### **associations**: (list with nested dict, optional)
 
@@ -44,7 +66,7 @@ Options:
 
 ### **engines**: (list with nested dict, optional)
 
-- enable a secret engine in the namespace. currently working: kv and pki. some options must be set per engine type (see below).
+- enable a secret engine in the namespace. currently tested: kv, azure, and pki. some options must be set per engine type (see below).
 
 _kv_
 
@@ -53,17 +75,18 @@ _kv_
 - max_ttl: (string, opt, default('50m'))
 - default_ttl: (string, opt, default('5m'))
 
+_azure_
+
+- mount_name (string, req)
+- max_ttl: (string, opt, default('50m'))
+- default_ttl: (string, opt, default('5m'))
+
 _pki_
 
 - mount_name (string, req)
-- version (string, opt, default(1))
 - max_ttl: (string, opt, default('50m'))
 - default_ttl: (string, opt, default('5m'))
-- ca_int: (bool, opt) - setup pki as intermediate CA, not working yet
-
-### **approles**: (list with nested dict, optional)
-
-- create approles from defined files in approles/*.json. note, you can associate policies via the `associations` option above.
+- ca_int: (bool, opt) - setup pki as intermediate CA, not implemented yet
 
 ## Default Variables
 
@@ -72,7 +95,3 @@ vault_url: "{{ lookup('env','VAULT_ADDR') }}"
 vault_bin: /usr/bin
 
 namespace_config_file: namespace_config.yml
-
-## Notes
-
-You must specifically create each namespace if you want it to have children. example, you want child namespace group_a/team_b. you must specifically create a namespace entries in your namespace_config.yml file to create both `group_a` **AND** `group_a/team_b`.

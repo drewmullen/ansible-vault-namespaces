@@ -34,7 +34,7 @@
 # TODO: check if policies match before applying (idempotent report)
 - name: write policies
   include_tasks: policy_write.yml
-  loop: "{{ policies.split(',') }}" #| replace(' ','')
+  loop: "{{ policies.split(',') }}"
   loop_control:
     loop_var: policy
 

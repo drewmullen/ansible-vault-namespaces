@@ -16,7 +16,7 @@
   uri:
     url: "{{ vault_url }}/v1/sys/mounts/{{ engine.mount_name }}"
     method: POST
-    body: '{"type": "{{ engine.mount_type }}","options":{"version":{{ engine.version | default(engine_version) }} },"config":{"default_lease_ttl":"{{ engine.default_ttl | default(engine_default_ttl)}}", "max_lease_ttl":"{{ engine.max_ttl | default(engine_max_ttl)}}" } }'
+    body: '{"type": "{{ engine.mount_type }}","config":{"default_lease_ttl":"{{ engine.default_ttl | default(engine_default_ttl)}}", "max_lease_ttl":"{{ engine.max_ttl | default(engine_max_ttl)}}" } {% if engine.mount_type == "kv" %}, "options":{"version":{{ engine.version | default(engine_version) }} }{% else %}{% endif %} }'
     headers:
       X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
       X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
