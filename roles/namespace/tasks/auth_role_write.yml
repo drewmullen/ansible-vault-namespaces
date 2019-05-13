@@ -1,0 +1,12 @@
+---
+
+- name: "write {{ auth.auth_type }}: {{ auth.role }} to namespace: {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/auth/{{ auth.auth_type }}/role/{{ auth.role }}"
+    method: POST
+    src: "auths/{{ auth.auth_type }}/{{ auth.role }}.json"
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    validate_certs: false
+    status_code: 204 # 404 = doesnt exist. need to make
