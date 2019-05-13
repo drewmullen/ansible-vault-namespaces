@@ -14,19 +14,22 @@
   when: ns_child != "" # skip if root namespace
 
 - name: configure ldap
-  import_tasks: ldap.yml
+  import_tasks: ldap_enable.yml
   when: ldap
 
-- block:
-    - name: enable approle
-      import_tasks: approle_enable.yml
+- name: enable auth mounts
+  include_tasks: auth_enable.yml
+  loop: "{{ auths }}"
+  loop_control:
+    loop_var: auth
+  when: auths
 
-    - name: write approles
-      include_tasks: approle_write.yml
-      loop: "{{ approles }}"
-      loop_control:
-        loop_var: approle
-  when: approles # skip if no approles defined
+- name: write auth roles
+  include_tasks: auth_role_write.yml
+  loop: "{{ auths }}"
+  loop_control:
+    loop_var: auth
+  when: auths
 
 # TODO: check if policies match before applying (idempotent report)
 - name: write policies
