@@ -1,0 +1,44 @@
+---
+
+- name: "check {{ auth.auth_type }} exists in {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/sys/auth/{{ auth.auth_type }}/tune"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    validate_certs: false
+    status_code: 200, 400 # 400 = doesnt exist or bad request
+  register: exists
+
+- name: "enable {{ auth.auth_type }} mount in {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/sys/auth/{{ auth.auth_type }}"
+    method: POST
+    body: '{"type": "{{ auth.auth_type }}","config":{"default_lease_ttl":"{{ auth.default_ttl | default(approle_default_ttl)}}", "max_lease_ttl":"{{ auth.max_ttl | default(approle_max_ttl)}}" }  }'
+    body_format: json
+    validate_certs: false
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    status_code: 204 # 400 yields bad request, already exists
+  register: made
+  changed_when: made.status == 204
+  when: exists.status == 400
+  # run this play when idempotence check 
+
+- name: "config {{ auth.auth_type }} in {{ ns_name }}"
+  uri:
+    url: "{{ vault_url }}/v1/auth/{{ auth.auth_type }}/config"
+    method: POST
+    src: "auths/{{ auth.auth_type }}/{{ auth.config }}.json"
+    body_format: json
+    validate_certs: false
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    status_code: 204
+  register: rc
+  changed_when: rc.status is defined
+  when:  auth.auth_type == "azure"
+  # run this play when 

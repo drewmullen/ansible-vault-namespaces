@@ -7,7 +7,7 @@
     method: GET
     headers:
       X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
-      X-Vault-Namespace: "{{ ns_name }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
     validate_certs: false
     status_code: 200,400
   register: exists  #200 means exists already, 400 means doesnt exist
@@ -19,7 +19,7 @@
     body: '{"type": "{{ engine.mount_type }}","options":{"version":{{ engine.version | default(engine_version) }} },"config":{"default_lease_ttl":"{{ engine.default_ttl | default(engine_default_ttl)}}", "max_lease_ttl":"{{ engine.max_ttl | default(engine_max_ttl)}}" } }'
     headers:
       X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
-      X-Vault-Namespace: "{{ ns_name }}"
+      X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
     validate_certs: false
     status_code: 204
     body_format: json

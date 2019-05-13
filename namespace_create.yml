@@ -18,18 +18,18 @@
   tasks:
 
     - set_fact:
-        ns_list: "{{ namespace_config.keys() | list }}"
+        ns_list: "{{ namespace_config.keys() | sort }}"
         ns_config: "{{ namespace_config }}"
 
-    - name: iterate through ns_nest to create parent / child namespaces
+    - name: iterate through ns_list to create parent / child namespaces
       include_role:
         name: namespace
       loop: "{{ ns_list }}"
       loop_control:
         loop_var: ns_name
       vars:
-        approles: "{{ ns_config[ns_name].approles | default([])}}"
-        ldap: "{{ ns_config[ns_name].ldap }}"
+        auths: "{{ ns_config[ns_name].auths | default([])}}"
+        ldap: "{{ ns_config[ns_name].ldap | default('') }}"
         engines: "{{ ns_config[ns_name].engines | default([]) }}"
         policies: "{{ ns_config[ns_name].policies | default('default') }}"
         associations: "{{ ns_config[ns_name].associations | default('') }}"

@@ -1,5 +1,8 @@
 ---
 
+# LDAP requires its own 'enable' file because it does not follow the 
+# auth/x/tune convention that most other auth mounts follow
+
 - name: "read ldap config in {{ ns_name }}"
   uri:
     url: "{{ vault_url }}/v1/auth/ldap/config"
@@ -29,7 +32,7 @@
   uri:
     url: "{{ vault_url }}/v1/auth/ldap/config"
     method: POST
-    body: "{{ lookup('file','ldap.json') }}"
+    src: "auths/ldap/{{ auth.ldap_config }}.json"
     headers:
       X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
       X-Vault-Namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
