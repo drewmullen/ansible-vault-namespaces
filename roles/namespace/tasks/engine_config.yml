@@ -1,0 +1,20 @@
+---
+
+# Approle
+
+# Azure
+- name: "configure azure secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_azure_secret_engine_config:
+    mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
+    config_file: "{{ playbook_dir }}/engines/azure/config/{{ engine_config }}.json"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  when: engine.mount_type | lower == 'azure'
+
+# Database
+
+- name: "configure database secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_db_secret_engine_config:
+    name: "{{ engine_config }}"
+    mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
+    config_file: "{{ playbook_dir }}/engines/database/config/{{ engine_config }}.json"
+  when: engine.mount_type | lower == 'database'

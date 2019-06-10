@@ -6,41 +6,98 @@
 
 namespace_config:
 
-  root:
-      ldap: true
-      policies: default,ns_admin
-      associations:
-        - path: auth/ldap/groups/admins
-          policies: ns_admin
+  # root:
+  #     ldap: true
+  #     policies: default,ns_admin
+  #     associations:
+  #       - path: auth/ldap/groups/admins
+  #         policies: ns_admin
 
-  namespace_1:
-      ldap: true
-      policies: default,secret_rw
-      associations:
-        - path: auth/ldap/groups/group_1
-          policies: secret_rw
+  vse:
+      policies: default, secret_rw
+      # associations:
+      #   - path: auth/ldap/groups/group_1
+      #     policies: secret_rw
       engines:
         - mount_type: kv
-          mount_name: secret
-          version: 2
+          mount_name: secret2
+          options: 
+            version: '2'
+          mount_config: 
+            default_lease_ttl: 500
+        - mount_type: azure
+          mount_name: azure
+          mount_config: 
+            default_lease_ttl: 500
+          roles: contributor
+          engine_config: vse
+        - mount_type: database
+          mount_name: database
+          mount_config: 
+            default_lease_ttl: 500
+          # roles: contributor
+          engine_config: sonarqube-postgres
+          roles: sonarqube-postgres
+      auths:
+        - auth_type: azure
+          auth_name: azure
+          mount_config: 
+            default_lease_ttl: 500
+          auth_config: vse
+          roles: drewbuntu-dev
 
-  namespace_1/child_1:
-      ldap: true
-      engines:
-        - mount_type: kv
-          mount_name: secret
-          version: 2
-          #max_ttl: 50m
-          #default_ttl: 5m
-        - mount_type: pki
-          mount_name: pki
-          ca_int: true
-          #version: 1
-      approles:
-        - role: my_app
-          #max_ttl: 50m
+  # vse/child2:
+  #     policies: default, secret_rw
+  #     # associations:
+  #     #   - path: auth/ldap/groups/group_1
+  #     #     policies: secret_rw
+  #     engines:
+  #       - mount_type: kv
+  #         mount_name: secret2
+  #         options: 
+  #           version: '2'
+  #         mount_config: 
+  #           default_ttl: 500
+  #       - mount_type: azure
+  #         mount_name: azure
+  #         mount_config: 
+  #           default_ttl: 500
+  #         roles: contributor
+  #         engine_config: vse
+  #       - mount_type: database
+  #         mount_name: database
+  #         mount_config: 
+  #           default_ttl: 500
+  #         # roles: contributor
+  #         engine_config: sonarqube-postgres
+  #         roles: sonarqube-postgres
+  #     auths:
+  #       - auth_type: azure
+  #         auth_name: az2
+  #         mount_config: 
+  #           default_ttl: 500
+  #         auth_config: vse
+  #         roles: drewbuntu-dev
 
-      policies: default,ns_admin,pki_user
-      associations:
-        - path: auth/ldap/groups/admins_2
-          policies: pki_user
+
+
+  # namespace_1/child_1:
+  #     ldap: true
+  #     engines:
+  #       - mount_type: kv
+  #         mount_name: secret
+  #         version: 2
+  #         #max_ttl: 50m
+  #         #default_ttl: 5m
+  #       - mount_type: pki
+  #         mount_name: pki
+  #         ca_int: true
+  #         #version: 1
+  #     approles:
+  #       - role: my_app
+  #         #max_ttl: 50m
+
+  #     policies: default,ns_admin,pki_user
+  #     associations:
+  #       - path: auth/ldap/groups/admins_2
+  #         policies: pki_user

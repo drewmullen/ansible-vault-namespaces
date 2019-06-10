@@ -1,0 +1,11 @@
+---
+
+# Approle
+
+
+# Azure
+- name: "configure {{ auth.auth_type }} auth role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_azure_auth_role:
+    name: "{{ role }}"
+    role_file: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/roles/{{ role }}.json"
+  when: auth.auth_type | lower == 'azure'
