@@ -4,7 +4,7 @@
   hashivault_auth_method:
     method_type: "{{ auth.auth_type }}"
     mount_point: "{{ auth.auth_name | default(auth.auth_type) }}"
-    config: "{{ auth.mount_config }}"
+    config: "{{ auth.mount_config | default({}) }}"
     namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
 
 # Approle
