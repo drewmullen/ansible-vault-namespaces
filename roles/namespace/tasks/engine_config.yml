@@ -1,13 +1,20 @@
 ---
 
-# Approle
+- name: "include {{ engine.mount_type }} secret engine vars file {{ engine_config }}"
+  include_vars: "{{ playbook_dir }}/engines/{{ engine.mount_type }}/config/{{ engine_config }}.json"
+
+  # Approle
 
 # Azure
 - name: "configure azure secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
   hashivault_azure_secret_engine_config:
     mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
-    config_file: "{{ playbook_dir }}/engines/azure/config/{{ engine_config }}.json"
     namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    tenant_id: "{{ tenant_id }}"
+    subscription_id: "{{ subscription_id }}"
+    environment: "{{ az_environment | default('AzurePublicCloud') }}"
+    client_id: "{{ client_id }}"
+    client_secret: "{{ client_secret }}"
   when: engine.mount_type | lower == 'azure'
 
 # Database
@@ -16,5 +23,12 @@
   hashivault_db_secret_engine_config:
     name: "{{ engine_config }}"
     mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
-    config_file: "{{ playbook_dir }}/engines/database/config/{{ engine_config }}.json"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    db_username:  "{{ username }}"
+    db_password: "{{ password }}"
+    plugin_name: "{{ plugin_name }}"
+    connection_url: "{{ connection_url }}"
+    allowed_roles: "{{ allowed_roles | default([]) }}"
+    verify_connection: "{{ verify_connection | default('true') }}"
+    root_credentials_rotate_statements: "{{ root_credentials_rotate_statements | default([]) }}"
   when: engine.mount_type | lower == 'database'
