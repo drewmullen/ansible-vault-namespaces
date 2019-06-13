@@ -7,8 +7,6 @@
     config: "{{ auth.mount_config | default({}) }}"
     namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
 
-# Approle
-
 
 # Azure
 - name: "configure {{ auth.auth_type }} role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
@@ -18,9 +16,12 @@
     loop_var: auth_config
   when: auth.auth_config is defined and auth.auth_type | lower == 'azure'
 
+
+# Create role
+
 - name: "create {{ auth.auth_type }} role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
   include_tasks: auth_role.yml
   loop: "{{ auth.roles.split(',') }}"
   loop_control:
     loop_var: role
-  when: auth.roles is defined and auth.auth_type | lower == 'azure'
+  when: auth.roles is defined and auth.auth_type | lower == 'azure' or auth.auth_type | lower == 'approle'

@@ -4,8 +4,6 @@
 - name: "include {{ auth.auth_name }} variables for {{ auth_config }}"
   include_vars: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/config/{{ auth_config }}.json"
   
-# Approle
-
 # Azure
 
 - name: "configure {{ auth.auth_type }} auth method in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
