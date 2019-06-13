@@ -1,9 +1,5 @@
 ---
 
-# Usage Overview:
-# pki enable works but cannot promote to ca
-# no spaces after commas
-
 namespace_config:
 
   root:
@@ -11,9 +7,6 @@ namespace_config:
 
   namespace_name:
       policies: default, secret_rw
-      associations:
-        - path: auth/ldap/groups/group_1
-          policies: secret_rw
       engines:
         - mount_type: kv
           mount_name: secret2
@@ -66,6 +59,7 @@ namespace_config:
 
   # current graveyard
     # root:
+    #   ldap: true
     #   associations:
     #     - path: auth/ldap/groups/admins
     #       policies: ns_admin

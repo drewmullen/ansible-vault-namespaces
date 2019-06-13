@@ -1,21 +1,14 @@
 ---
 
-# Requirements:
-#
-# file: config/namespaces.yml
-
-# TODO: account for spaces
-# TODO: pki backend
-# TODO: plugins
-# TODO: idempotence on policy plays
-
 - hosts: localhost
   strategy: linear
   run_once: true
   connection: local
-  vars_files:
-    - "/Users/dmullen/git/namespaces/ansible-vault-namespaces/config/namespaces_config.yml"
+  vars:
+    namespace_config_file: "{{ playbook_dir }}/config/namespaces_config.yml"
   tasks:
+
+    - include_vars: "{{ namespace_config_file }}"
 
     - set_fact:
         ns_list: "{{ namespace_config.keys() | sort }}"
@@ -29,8 +22,7 @@
         loop_var: ns_name
       vars:
         auths: "{{ ns_config[ns_name].auths | default([]) }}"
-        ldap: "{{ ns_config[ns_name].ldap | default('') }}"
         engines: "{{ ns_config[ns_name].engines | default([]) }}"
         policies: "{{ ns_config[ns_name].policies | default('default') }}"
-        associations: "{{ ns_config[ns_name].associations | default([]) }}"
+        # associations: "{{ ns_config[ns_name].associations | default([]) }}" currently disabled
 
