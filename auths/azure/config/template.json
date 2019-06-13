@@ -1,0 +1,6 @@
+{
+  "resource": "https://management.azure.com/",
+  "tenant_id": "",
+  "client_id": "",
+  "client_secret": "{{ lookup('hashi_vault', 'secret=secret/data/az-auth-secret validate_certs=false')['data']['password'] }}"
+}

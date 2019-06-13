@@ -1,0 +1,6 @@
+{
+    "creation_statements": [],
+    "revocation_statements": [],
+    "rollback_statements": [],
+    "db_name": "sonarqube-postgres"
+}

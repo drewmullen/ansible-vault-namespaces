@@ -1,0 +1,13 @@
+{
+    "url":"ldap://ldap.example.com",
+    "userattr":sAMAccountName,
+    "userdn":"ou=Users,dc=example,dc=com",
+    "groupdn":"ou=Users,dc=example,dc=com",
+    "groupfilter":"(&(objectClass=person)(uid={{.Username}}))",
+    "groupattr":"memberOf",
+    "binddn":"cn=vault,ou=users,dc=example,dc=com",
+    "bindpass":'My$ecrt3tP4ss',
+    "insecure_tls":false,
+    "starttls":true
+
+}
