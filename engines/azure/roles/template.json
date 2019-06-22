@@ -1,0 +1,3 @@
+{
+    "azure_role": "[{ 'role_name': 'Contributor','scope': '/subscriptions/1234-subscriptionid-street'}]"
+}

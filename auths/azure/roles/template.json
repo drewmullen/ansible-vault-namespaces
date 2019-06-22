@@ -1,0 +1,6 @@
+{
+    "policies": [""],
+    "bound_resource_groups": [""],
+    "bound_subscription_ids": [""],
+    "num_uses": 3
+}

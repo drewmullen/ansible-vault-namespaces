@@ -1,0 +1,17 @@
+---
+
+# importing like this allows templating values, eg client_secret
+- name: "include {{ auth.auth_name }} variables for {{ auth_config }}"
+  include_vars: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/config/{{ auth_config }}.json"
+  
+# Azure
+
+- name: "configure {{ auth.auth_type }} auth method in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_azure_auth_config:
+    mount_point: "{{ auth.auth_name | default(auth.auth_type) }}"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    tenant_id: "{{ tenant_id }}"
+    client_id: "{{ client_id | default('') }}"
+    resource: "{{ resource | default('') }}"
+    client_secret: "{{ client_secret | default('') }}"
+  when: auth.auth_type | lower == 'azure'

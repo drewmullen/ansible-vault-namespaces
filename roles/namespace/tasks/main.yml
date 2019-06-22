@@ -13,40 +13,41 @@
   import_tasks: namespace_create.yml
   when: ns_child != "" # skip if root namespace
 
-- name: configure ldap
-  import_tasks: ldap_enable.yml
-  when: ldap
+# Namespace should be set globally but change should wait for 'root' to be accepted namespace name
 
 - name: enable auth mounts
-  include_tasks: auth_enable.yml
+  include_tasks: auth.yml
   loop: "{{ auths }}"
   loop_control:
     loop_var: auth
   when: auths
 
-- name: write auth roles
-  include_tasks: auth_role_write.yml
-  loop: "{{ auths }}"
-  loop_control:
-    loop_var: auth
-  when: auths
-
-# TODO: check if policies match before applying (idempotent report)
 - name: write policies
   include_tasks: policy_write.yml
   loop: "{{ policies.split(',') }}"
   loop_control:
     loop_var: policy
 
-- name: assoc policies
-  include_tasks: policy_associate.yml
-  loop: "{{ associations | flatten(levels=1)}}"
-  loop_control:
-    loop_var: policy
-
 - name: enable secret engines
-  include_tasks: engine_enable.yml
-  loop: "{{ engines | flatten(levels=1)}}"
+  include_tasks: engine.yml
+  loop: "{{ engines }}"
   loop_control:
     loop_var: engine
   when: engines # skip if no engines are defined
+
+# - name: configure ldap
+#   import_tasks: ldap_enable.yml
+#   when: ldap
+
+# - name: write auth roles
+#   include_tasks: auth_role_write.yml
+#   loop: "{{ auths }}"
+#   loop_control:
+#     loop_var: auth
+#   when: auths
+
+# - name: assoc policies
+#   include_tasks: policy_associate.yml
+#   loop: "{{ associations }}"
+#   loop_control:
+#     loop_var: policy

@@ -1,0 +1,23 @@
+---
+
+- name: "enable {{ engine.mount_type }} secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_secret_engine:
+    name: "{{ engine.mount_name | default(engine.mount_type) }}"
+    backend: "{{ engine.mount_type }}"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    config: "{{ engine.mount_config | default({}) }}"
+    options: "{{ engine.options | default({}) }}"
+
+- name: "configure {{ engine.mount_type }} secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  include_tasks: engine_config.yml
+  loop: "{{ engine.engine_config.split(',') }}"
+  loop_control:
+    loop_var: engine_config
+  when: engine.engine_config is defined
+
+- name: "create roles for secret engine"
+  include_tasks: engine_role.yml
+  loop: "{{ engine.roles.split(',') }}"
+  loop_control:
+    loop_var: role
+  when: engine.roles is defined

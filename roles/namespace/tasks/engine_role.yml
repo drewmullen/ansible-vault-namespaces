@@ -1,0 +1,22 @@
+---
+
+# Approle
+
+
+# Azure
+- name: "write azure secret engine role: {{ role }} in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_azure_secret_engine_role:
+    name: "{{ role }}"
+    azure_role_file: "{{ playbook_dir }}/engines/azure/roles/{{ role }}.json"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  when: engine.mount_type | lower == 'azure'
+
+
+# Database
+- name: "write database secret engine role: {{ role }} in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_db_secret_engine_role:
+    name: "{{ role }}"
+    role_file: "{{ playbook_dir }}/engines/database/roles/{{ role }}.json"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  when: engine.mount_type | lower == 'database'
+

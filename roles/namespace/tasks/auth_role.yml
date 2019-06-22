@@ -1,0 +1,34 @@
+---
+
+# Approle
+
+- name: include vars for approle
+  include_vars: "auths/approle/roles/{{ role }}.json"
+  when: auth.auth_type | lower == 'approle'
+
+#needs to be idempotent and be accepted as a file
+# https://github.com/TerryHowe/ansible-modules-hashivault/issues/136
+# once fixed change this back to using file reference
+- name: "configure {{ role }} approle in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_approle_role_create:
+    name: "{{ role }}"
+    bind_secret_id: "{{ bind_secret_id | default('true') | bool }}"
+    bound_cidr_list: "{{ bound_cidr_list | default([]) }}"
+    secret_id_num_uses: "{{ secret_id_num_uses | default(0) }}"
+    secret_id_ttl: "{{ secret_id_ttl | default('') }}"
+    token_num_uses: "{{ token_num_uses | default(0) }}"
+    token_ttl: "{{ token_ttl | default('') }}"
+    token_max_ttl: "{{ token_max_ttl | default('') }}"
+    period: "{{ period | default('') }}"
+    enable_local_secret_ids: "{{ enable_local_secret_ids | default('false') | bool }}"
+    policies: "{{ policies | default([]) }}"
+    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  when: auth.auth_type | lower == 'approle'
+
+
+# Azure
+- name: "configure {{ auth.auth_type }} auth role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+  hashivault_azure_auth_role:
+    name: "{{ role }}"
+    role_file: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/roles/{{ role }}.json"
+  when: auth.auth_type | lower == 'azure'

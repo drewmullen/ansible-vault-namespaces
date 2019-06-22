@@ -1,0 +1,9 @@
+auths/azure/config/*
+auths/azure/roles/*
+auths/approle/roles/*
+engines/azure/config/*
+engines/azure/roles/*
+engines/database/roles/*
+engines/database/config/*
+
+!**/template.json
