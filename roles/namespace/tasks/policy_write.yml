@@ -1,7 +1,7 @@
 ---
 
-- name: "create vault policies in {% if ns_name == 'root' %}{% else %}{{ ns_name | default('')}}{% endif %}"
+- name: "create vault policies in {{ ns_name }}"
   hashivault_policy_set_from_file:
       name: "{{ policy }}"
       rules_file: "{{ playbook_dir }}/policies/{{ policy | replace(' ','') }}.hcl" # remove spaces when list item contains
-      namespace: "{% if ns_name == 'root' %}{% else %}{{ ns_name | default('')}}{% endif %}"
+      namespace: "{{ ns_name }}"
