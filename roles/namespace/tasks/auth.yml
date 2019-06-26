@@ -1,15 +1,15 @@
 ---
 
-- name: "enable {{ auth.auth_type }} in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "enable {{ auth.auth_type }} in {{ ns_name }}"
   hashivault_auth_method:
     method_type: "{{ auth.auth_type }}"
     mount_point: "{{ auth.auth_name | default(auth.auth_type) }}"
     config: "{{ auth.mount_config | default({}) }}"
-    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    namespace: "{{ ns_name }}"
 
 
 # Azure
-- name: "configure {{ auth.auth_type }} role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "configure {{ auth.auth_type }} role in {{ ns_name }}"
   include_tasks: auth_config.yml
   loop: "{{ auth.auth_config.split(',') }}"
   loop_control:
@@ -19,7 +19,7 @@
 
 # Create role
 
-- name: "create {{ auth.auth_type }} role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "create {{ auth.auth_type }} role in {{ ns_name }}"
   include_tasks: auth_role.yml
   loop: "{{ auth.roles.split(',') }}"
   loop_control:

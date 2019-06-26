@@ -6,10 +6,10 @@
   # Approle
 
 # Azure
-- name: "configure azure secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "configure azure secret engine in {{ ns_name }}"
   hashivault_azure_secret_engine_config:
     mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
-    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    namespace: "{{ ns_name }}"
     tenant_id: "{{ tenant_id }}"
     subscription_id: "{{ subscription_id }}"
     environment: "{{ az_environment | default('AzurePublicCloud') }}"
@@ -19,11 +19,11 @@
 
 # Database
 
-- name: "configure database secret engine in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "configure database secret engine in {{ ns_name }}"
   hashivault_db_secret_engine_config:
     name: "{{ engine_config }}"
     mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
-    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    namespace: "{{ ns_name }}"
     db_username:  "{{ username }}"
     db_password: "{{ password }}"
     plugin_name: "{{ plugin_name }}"

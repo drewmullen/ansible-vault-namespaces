@@ -9,7 +9,7 @@
 #needs to be idempotent and be accepted as a file
 # https://github.com/TerryHowe/ansible-modules-hashivault/issues/136
 # once fixed change this back to using file reference
-- name: "configure {{ role }} approle in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "configure {{ role }} approle in {{ ns_name }}"
   hashivault_approle_role_create:
     name: "{{ role }}"
     bind_secret_id: "{{ bind_secret_id | default('true') | bool }}"
@@ -22,12 +22,12 @@
     period: "{{ period | default('') }}"
     enable_local_secret_ids: "{{ enable_local_secret_ids | default('false') | bool }}"
     policies: "{{ policies | default([]) }}"
-    namespace: "{% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+    namespace: "{{ ns_name }}"
   when: auth.auth_type | lower == 'approle'
 
 
 # Azure
-- name: "configure {{ auth.auth_type }} auth role in {% if ns_name == 'root'%}{% else %}{{ ns_name }}{% endif %}"
+- name: "configure {{ auth.auth_type }} auth role in {{ ns_name }}"
   hashivault_azure_auth_role:
     name: "{{ role }}"
     role_file: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/roles/{{ role }}.json"
