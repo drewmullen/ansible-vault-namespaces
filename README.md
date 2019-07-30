@@ -19,6 +19,7 @@ Secret Engines:
 ## Dependencies
 
 1. `pip install ansible hvac ansible-modules-hashivault` (consider using `--user` or a virtualenv)
+2. ansible via python 3.7
 
 ## Requirements
 
