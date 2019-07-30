@@ -21,6 +21,16 @@ Secret Engines:
 1. `pip install ansible hvac ansible-modules-hashivault` (consider using `--user` or a virtualenv)
 2. ansible via python 3.7
 
+### Setup a dev environment
+
+1. install [vault](https://www.vaultproject.io/docs/install/#precompiled-binaries) locally 
+2. start a dev server:
+```bash
+vault server -dev
+export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_TOKEN=root
+```
+
 ## Requirements
 
 - set the vars_files to include your config file or set `namespace_config_file` to the path to your file
