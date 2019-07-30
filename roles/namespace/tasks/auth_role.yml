@@ -31,4 +31,5 @@
   hashivault_azure_auth_role:
     name: "{{ role }}"
     role_file: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/roles/{{ role }}.json"
+    namespace: "{{ ns_name }}"
   when: auth.auth_type | lower == 'azure'
