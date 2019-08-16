@@ -2,26 +2,12 @@
 
 # Approle
 
-- name: include vars for approle
-  include_vars: "auths/approle/roles/{{ role }}.json"
-  when: auth.auth_type | lower == 'approle'
-
 - name: "configure {{ role }} approle in {{ ns_name }}"
   hashivault_approle_role:
     name: "{{ role }}"
-    bind_secret_id: "{{ bind_secret_id | default('true') | bool }}"
-    bound_cidr_list: "{{ bound_cidr_list | default([]) }}"
-    secret_id_num_uses: "{{ secret_id_num_uses | default(0) }}"
-    secret_id_ttl: "{{ secret_id_ttl | default('') }}"
-    token_num_uses: "{{ token_num_uses | default(0) }}"
-    token_ttl: "{{ token_ttl | default('') }}"
-    token_max_ttl: "{{ token_max_ttl | default('') }}"
-    period: "{{ period | default('') }}"
-    enable_local_secret_ids: "{{ enable_local_secret_ids | default('false') | bool }}"
-    policies: "{{ policies | default([]) }}"
+    role_file: "auths/approle/roles/{{ role }}.json"
     namespace: "{{ ns_name }}"
   when: auth.auth_type | lower == 'approle'
-
 
 # Azure
 - name: "configure {{ auth.auth_type }} auth role in {{ ns_name }}"
