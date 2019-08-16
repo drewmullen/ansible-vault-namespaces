@@ -5,5 +5,7 @@ engines/azure/config/*
 engines/azure/roles/*
 engines/database/roles/*
 engines/database/config/*
+config/*
 
+!**/namespace_config.yml
 !**/template.json
