@@ -6,6 +6,9 @@
   connection: local
   vars:
     namespace_config_file: "{{ playbook_dir }}/config/namespaces_config.yml"
+  environment:
+    VAULT_ADDR: "{{ vault_url | default(lookup('env','VAULT_ADDR')) }}"
+    VAULT_TOKEN: "{{ vault_token | default(lookup('env','VAULT_TOKEN')) }}"
   tasks:
 
     - include_vars: "{{ namespace_config_file }}"
