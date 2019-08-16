@@ -15,7 +15,7 @@
   loop: "{{ auths }}"
   loop_control:
     loop_var: auth
-  when: auths |bool
+  when: auths is defined
 
 - name: write policies
   include_tasks: policy_write.yml
@@ -28,7 +28,7 @@
   loop: "{{ engines }}"
   loop_control:
     loop_var: engine
-  when: engines |bool # skip if no engines are defined
+  when: engines is defined
 
 # - name: configure ldap
 #   import_tasks: ldap_enable.yml
