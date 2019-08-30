@@ -7,8 +7,14 @@
     ns_child: "{{ ns_name.split('/')[-1:] | join('') }}"
 
 - name: "create namespace {{ ns_child }} in {{ ns_parent }}"
-  import_tasks: namespace_create.yml
+  hashivault_namespace:
+    name: "{{ ns_name }}"
+    namespace: "{{ ns_parent }}"
   when: ns_child != "root" # skip if root namespace, already exists
+
+# - name: "create namespace {{ ns_child }} in {{ ns_parent }}"
+#   import_tasks: namespace_create.yml
+#   when: ns_child != "root" # skip if root namespace, already exists
 
 - name: enable auth mounts
   include_tasks: auth.yml
