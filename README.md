@@ -1,3 +1,5 @@
+# This codebase is being moved to gitlab: https://gitlab.com/drewmullen/ansible-vault-namespaces
+
 # Vault
 
 ## Namespaces
