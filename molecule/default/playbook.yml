@@ -1,15 +1,11 @@
 ---
-# - name: Converge
-#   hosts: all
-#   roles:
-#     - role: namespaces
 
 - hosts: localhost
   strategy: linear
   run_once: true
   connection: local
   vars:
-    namespace_config_file: "/Users/dmullen/git/ansible-vault-namespaces/config/namespaces_config.yml"
+    namespace_config_file: "{{ playbook_dir }}/../../config/namespaces_config.yml"
   tasks:
 
     - name: ingest namespace config file
@@ -22,7 +18,7 @@
 
     - name: iterate through ns_list to create parent / child namespaces
       include_role:
-        name: /Users/dmullen/git/ansible-vault-namespaces/roles/namespace
+        name: "{{ playbook_dir }}/../../roles/namespace"
       loop: "{{ ns_list }}"
       loop_control:
         loop_var: ns_name
