@@ -2,25 +2,23 @@
 
 # in order to build child namespaces you need to indicate the the parent. these facts maintain the current
 # parent and the current child (looping through the namespaces_config_template.yml)
-# ns_child is set to "" if root. this is because the `X-Vault-Namespace` header will handle "" as the root namespace
-# and will not handle "root"
-# some of this logic can be simplified in a future release: https://github.com/hashicorp/vault/issues/5987
-- set_fact:
+- name: set parent and child namespace to build a namespace
+  set_fact:
     ns_parent: "{% if ns_name.split('/') | count > 1 %}{{ ns_name.split('/')[:-1] | join('/') }}{% else %}{% endif %}"
-    ns_child: "{% if ns_name.split('/')[-1:] | join('') == 'root' %}{% else %}{{ ns_name.split('/')[-1:] | join('')  }}{% endif %}"
+    ns_child: "{{ ns_name.split('/')[-1:] | join('') }}"
 
-- name: "create namespace {{ ns_child }} {% if ns_parent != '' %}in {{ ns_parent }}{%else%}{%endif%}"
-  import_tasks: namespace_create.yml
-  when: ns_child != "" # skip if root namespace
-
-# Namespace should be set globally but change should wait for 'root' to be accepted namespace name
+- name: "create namespace {{ ns_child }} in {{ ns_parent }}"
+  hashivault_namespace:
+    name: "{{ ns_name }}"
+    namespace: "{{ ns_parent }}"
+  when: ns_child != "root" # skip if root namespace, already exists
 
 - name: enable auth mounts
   include_tasks: auth.yml
   loop: "{{ auths }}"
   loop_control:
     loop_var: auth
-  when: auths
+  when: auths is defined
 
 - name: write policies
   include_tasks: policy_write.yml
@@ -33,7 +31,7 @@
   loop: "{{ engines }}"
   loop_control:
     loop_var: engine
-  when: engines # skip if no engines are defined
+  when: engines is defined
 
 # - name: configure ldap
 #   import_tasks: ldap_enable.yml

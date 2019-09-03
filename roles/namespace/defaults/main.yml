@@ -1,9 +1,5 @@
 ---
 
-vault_url: "{{ lookup('env','VAULT_ADDR') }}"
-vault_bin: /usr/bin
-namespace_config_file: namespace_config.yml
-
 engine_version: 1 # kv engine should be set to `version: 2` in list
 engine_default_ttl: 30m
 engine_max_ttl: 10080m #1 week
