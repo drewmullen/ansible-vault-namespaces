@@ -24,7 +24,7 @@
     name: "{{ engine_config }}"
     mount_point: "{{ engine.mount_name | default(engine.mount_type) }}"
     namespace: "{{ ns_name }}"
-    db_username:  "{{ username }}"
+    db_username: "{{ username }}"
     db_password: "{{ password }}"
     plugin_name: "{{ plugin_name }}"
     connection_url: "{{ connection_url }}"

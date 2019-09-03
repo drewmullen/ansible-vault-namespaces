@@ -1,6 +1,6 @@
 ---
 
-# LDAP requires its own 'enable' file because it does not follow the 
+# LDAP requires its own 'enable' file because it does not follow the
 # auth/x/tune convention that most other auth mounts follow
 
 - name: "read ldap config in {{ ns_name }}"
@@ -41,5 +41,3 @@
     body_format: json
   when: ldap_get.status == 404
   changed_when: true
-
-

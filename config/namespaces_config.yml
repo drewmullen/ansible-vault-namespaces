@@ -3,63 +3,62 @@
 namespace_config:
 
   root:
-      policies: default,ns_admin
+    policies: default,ns_admin
 
   namespace_name:
-      policies: default, secret_rw
-      engines:
-        - mount_type: kv
-          mount_name: secret2
-          options: 
-            version: '2'
-          mount_config: 
-            default_lease_ttl: 500
-        - mount_type: azure
-          roles: contributor
-          engine_config: vse
-        - mount_type: database
-          engine_config: postgres-db
-          roles: my-db-user
-      auths:
-        - auth_type: azure
-          auth_name: azure
-          mount_config: 
-            default_lease_ttl: 500
-          auth_config: az
-          roles: drewbuntu-dev
-        - auth_type: approle
-          roles: template
+    policies: default, secret_rw
+    engines:
+      - mount_type: kv
+        mount_name: secret2
+        options:
+          version: '2'
+        mount_config:
+          default_lease_ttl: 500
+      - mount_type: azure
+        roles: contributor
+        engine_config: vse
+      - mount_type: database
+        engine_config: postgres-db
+        roles: my-db-user
+    auths:
+      - auth_type: azure
+        auth_name: azure
+        mount_config:
+          default_lease_ttl: 500
+        auth_config: az
+        roles: drewbuntu-dev
+      - auth_type: approle
+        roles: template
 
-  # vse/child2:
-  #     policies: default, secret_rw
-  #     # associations:
-  #     #   - path: auth/ldap/groups/group_1
-  #     #     policies: secret_rw
-  #     engines:
-  #       - mount_type: kv
-  #         mount_name: secret2
-  #         options: 
-  #           version: '2'
-  #         mount_config: 
-  #           default_ttl: 500
-  #       - mount_type: azure
-  #         mount_name: azure
-  #         mount_config: 
-  #           default_ttl: 500
-  #         roles: contributor
-  #         engine_config: vse
-  #     auths:
-  #       - auth_type: azure
-  #         auth_name: az2
-  #         mount_config: 
-  #           default_ttl: 500
-  #         auth_config: vse
-  #         roles: template
+# vse/child2:
+#   policies: default, secret_rw
+#   associations:
+#     - path: auth/ldap/groups/group_1
+#       policies: secret_rw
+#   engines:
+#     - mount_type: kv
+#       mount_name: secret2
+#       options:
+#         version: '2'
+#       mount_config:
+#         default_ttl: 500
+#     - mount_type: azure
+#       mount_name: azure
+#       mount_config:
+#         default_ttl: 500
+#       roles: contributor
+#       engine_config: vse
+#   auths:
+#     - auth_type: azure
+#       auth_name: az2
+#       mount_config:
+#         default_ttl: 500
+#       auth_config: vse
+#       roles: template
 
-
-  # current graveyard
-    # root:
-    #   ldap: true
-    #   associations:
-    #     - path: auth/ldap/groups/admins
-    #       policies: ns_admin
+# current graveyard
+#   root:
+#     ldap: true
+#     associations:
+#       - path: auth/ldap/groups/admins
+#         policies: ns_admin

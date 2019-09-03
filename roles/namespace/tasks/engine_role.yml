@@ -19,4 +19,3 @@
     role_file: "{{ playbook_dir }}/engines/database/roles/{{ role }}.json"
     namespace: "{{ ns_name }}"
   when: engine.mount_type | lower == 'database'
-
