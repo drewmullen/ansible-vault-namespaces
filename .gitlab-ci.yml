@@ -17,4 +17,4 @@ molecule:
   script:
     - pip3 install ansible==2.8.4 molecule==2.20.2 docker==4.0.2 ansible-modules-hashivault==4.1.0
     - ansible --version
-    - VAULT_TOKEN=root VAULT_ADDR=docker:8200 molecule test
+    - VAULT_TOKEN=root VAULT_ADDR=http://docker:8200 molecule test
