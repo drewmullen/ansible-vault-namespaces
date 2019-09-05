@@ -5,7 +5,7 @@
   run_once: true
   connection: local
   vars:
-    namespace_config_file: "{{ playbook_dir }}/../../config/namespaces_config.yml"
+    namespace_config_file: "config_test.yml"
   tasks:
 
     - name: ingest namespace config file

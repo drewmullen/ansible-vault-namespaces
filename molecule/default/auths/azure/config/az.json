@@ -1,0 +1,6 @@
+{
+  "resource": "https://management.azure.com/",
+  "tenant_id": "asdf",
+  "client_id": "asdf",
+  "client_secret": "asdf"
+}
