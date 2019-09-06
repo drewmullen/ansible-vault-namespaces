@@ -9,3 +9,5 @@ config/*
 
 !**/namespace_config.yml
 !**/template.json
+
+*.pyc
