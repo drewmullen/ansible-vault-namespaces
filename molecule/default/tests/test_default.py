@@ -1,4 +1,5 @@
 import os
+import requests
 
 import testinfra.utils.ansible_runner
 
@@ -12,3 +13,7 @@ def test_hosts_file(host):
     assert f.exists
     assert f.user == 'root'
     assert f.group == 'root'
+
+def test_api_available(host):
+    r = requests.get(os.environ['VAULT_ADDR'] + '/v1/sys/health', verify=False).json()
+    assert r['sealed'] == False
