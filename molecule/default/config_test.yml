@@ -9,6 +9,15 @@ namespace_config:
     policies: secret_rw
     engines:
       - mount_type: kv
+      - mount_type: kv
+        mount_name: kv3
+        mount_config:
+          default_lease_ttl: 500
+          max_lease_ttl: 550
+      - mount_type: kv
+        mount_name: kv2
+        options:
+          version: 2
       # tests dont work well because mount validates against azure
       # - mount_type: azure
       #   roles: contributor
