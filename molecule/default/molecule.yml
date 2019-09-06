@@ -7,7 +7,7 @@ lint:
   name: yamllint
 platforms:
   - name: instance
-    image: drewmullen/docker-vault-ent:latest
+    image: drewmullen/docker-vault-ent:1.2.2
     pre_build_image: true
     command: server -dev && sleep 10000
     override_command: true

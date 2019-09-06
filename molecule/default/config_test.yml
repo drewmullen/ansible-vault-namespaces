@@ -1,0 +1,20 @@
+---
+
+namespace_config:
+
+  root:
+    policies: ns_admin
+
+  parent_ns:
+    policies: secret_rw
+    engines:
+      - mount_type: kv
+      # tests dont work well because mount validates against azure
+      # - mount_type: azure
+      #   roles: contributor
+      #   engine_config: vse
+    auths:
+      - auth_type: azure
+        auth_config: az
+      - auth_type: approle
+        roles: testrole
