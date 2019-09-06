@@ -1,6 +1,6 @@
 ---
 
-- name: "enable {{ engine.mount_type }} secret engine in {{ ns_name }}"
+- name: "enable {{ engine.mount_type }} named {{ engine.mount_name | default(engine.mount_type) }} in secret engine in {{ ns_name }}"
   hashivault_secret_engine:
     name: "{{ engine.mount_name | default(engine.mount_type) }}"
     backend: "{{ engine.mount_type }}"
@@ -8,7 +8,7 @@
     config: "{{ engine.mount_config | default({}) }}"
     options: "{{ engine.options | default({}) }}"
 
-- name: "configure {{ engine.mount_type }} secret engine in {{ ns_name }}"
+- name: "configure {{ engine.mount_type }} named {{ engine.mount_name | default(engine.mount_type) }} in secret engine in {{ ns_name }}"
   include_tasks: engine_config.yml
   loop: "{{ engine.engine_config.split(',') }}"
   loop_control:
