@@ -3,7 +3,7 @@
 # importing like this allows templating values, eg client_secret
 - name: "include {{ auth.auth_name }} variables for {{ auth_config }}"
   include_vars: "{{ playbook_dir }}/auths/{{ auth.auth_type }}/config/{{ auth_config }}.json"
-  
+
 # Azure
 
 - name: "configure {{ auth.auth_type }} auth method in {{ ns_name }}"

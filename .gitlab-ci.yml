@@ -1,0 +1,20 @@
+---
+image: docker:git
+
+services:
+  - docker:dind
+
+before_script:
+  - apk update && apk add --no-cache docker
+    python3-dev py3-pip docker gcc git curl build-base
+    autoconf automake py3-cryptography linux-headers
+    musl-dev libffi-dev openssl-dev openssh
+  - docker info
+  - python3 --version
+
+molecule:
+  stage: test
+  script:
+    - pip3 install ansible==2.8.4 molecule==2.20.2 docker==4.0.2 ansible-modules-hashivault==4.1.0
+    - ansible --version
+    - VAULT_TOKEN=root VAULT_ADDR=http://docker:8200 molecule test

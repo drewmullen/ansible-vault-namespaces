@@ -1,0 +1,7 @@
+{
+    "plugin_name": "postgresql-database-plugin",
+    "allowed_roles": [""],
+    "username": "user@db",
+    "password": "P@ssw0rd$",
+    "connection_url": "postgresql://{{'{{username}}'}}:{{'{{password}}'}}@dbstring.com:8502"
+}

@@ -2,7 +2,8 @@
 
 # in order to build child namespaces you need to indicate the the parent. these facts maintain the current
 # parent and the current child (looping through the namespaces_config_template.yml)
-- set_fact:
+- name: set parent and child namespace to build a namespace
+  set_fact:
     ns_parent: "{% if ns_name.split('/') | count > 1 %}{{ ns_name.split('/')[:-1] | join('/') }}{% else %}{% endif %}"
     ns_child: "{{ ns_name.split('/')[-1:] | join('') }}"
 
@@ -11,10 +12,6 @@
     name: "{{ ns_name }}"
     namespace: "{{ ns_parent }}"
   when: ns_child != "root" # skip if root namespace, already exists
-
-# - name: "create namespace {{ ns_child }} in {{ ns_parent }}"
-#   import_tasks: namespace_create.yml
-#   when: ns_child != "root" # skip if root namespace, already exists
 
 - name: enable auth mounts
   include_tasks: auth.yml
